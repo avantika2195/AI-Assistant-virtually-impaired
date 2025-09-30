@@ -46,15 +46,15 @@ export default function Chatbot() {
   const handleVoiceInput = () => {
     setIsListening(true);
     const recognition = new (window as any).webkitSpeechRecognition();
-    
+
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       const userMessage: Message = { text: transcript, isUser: true };
       setMessages(prev => [...prev, userMessage]);
-      
+
       const response = processMessage(transcript);
       const botMessage: Message = { text: response, isUser: false };
-      
+
       setTimeout(() => {
         setMessages(prev => [...prev, botMessage]);
         speak(response);
@@ -89,7 +89,7 @@ export default function Chatbot() {
         ))}
         <div ref={messagesEndRef} />
       </div>
-      
+
       <button
         onClick={handleVoiceInput}
         disabled={isListening}
