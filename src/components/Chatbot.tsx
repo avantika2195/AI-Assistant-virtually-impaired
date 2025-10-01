@@ -26,16 +26,16 @@ export default function Chatbot() {
     const lowerText = text.toLowerCase();
     let response = '';
 
-    if (lowerText.includes('hello') || lowerText.includes('hi')) {
+    if (lowerText.includes('hello')) {
       response = 'Hello! How can I help you today?';
     } else if (lowerText.includes('help')) {
       response = 'I can help you with image recognition, navigation, and general assistance. What would you like to do?';
-    } else if (lowerText.includes('what is the current time right now')) {
-      response = `The current time is ${new Date().toLocaleTimeString()}`;
-    } else if (lowerText.includes('how is todays weather')) {
-      response = "I apologize, but I currently don't have access to weather information. Would you like me to help you with something else?";
+    } else if (lowerText.includes('What is the current time right now')) {
+      response = 'The current time is ${new Date().toLocaleTimeString()}';
+    } else if (lowerText.includes('How is todays weather') || lowerText.includes('What is the weather today)) {
+      response = 'I apologize, but I currently don\'t have access to weather information. Would you like me to help you with something else?';
     } else {
-      response = "I'm not sure how to help with that. Would you like me to describe your surroundings using the camera?";
+      response = 'I\'m not sure how to help with that. Would you like me to describe your surroundings using the camera?';
     }
 
     return response;
@@ -44,15 +44,15 @@ export default function Chatbot() {
   const handleVoiceInput = () => {
     setIsListening(true);
     const recognition = new (window as any).webkitSpeechRecognition();
-
+    
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
       const userMessage: Message = { text: transcript, isUser: true };
       setMessages(prev => [...prev, userMessage]);
-
+      
       const response = processMessage(transcript);
       const botMessage: Message = { text: response, isUser: false };
-
+      
       setTimeout(() => {
         setMessages(prev => [...prev, botMessage]);
         speak(response);
@@ -87,7 +87,7 @@ export default function Chatbot() {
         ))}
         <div ref={messagesEndRef} />
       </div>
-
+      
       <button
         onClick={handleVoiceInput}
         disabled={isListening}
@@ -112,5 +112,4 @@ export default function Chatbot() {
     </div>
   );
 }
-
 
