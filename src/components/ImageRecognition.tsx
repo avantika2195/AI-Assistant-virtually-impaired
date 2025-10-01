@@ -2,7 +2,7 @@ import React, { useRef, useCallback, useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
 import * as cocossd from '@tensorflow-models/coco-ssd';
-import { Camera, Eye, Volume2, VolumeX } from 'lucide-react';
+import { Camera , Eye , Volume2 , VolumeX } from 'lucide-react';
 
 interface Detection {
   class: string;
@@ -18,12 +18,13 @@ export default function ImageRecognition() {
   const [isMuted, setIsMuted] = useState(false);
   const [detections, setDetections] = useState<Detection[]>([]);
   const [isLive, setIsLive] = useState(false);
-  
   useEffect(() => {
     const loadModel = async () => {
       try {
         await tf.ready();
-        const loadedModel = await cocossd.load({ base: 'mobilenet_v2' });
+        const loadedModel = await cocossd.load({
+          base: 'mobilenet_v2'
+        });
         setModel(loadedModel);
         speak('Vision system ready. You can say "detect" or "describe" to analyze your surroundings.');
       } catch (error) {
@@ -33,7 +34,6 @@ export default function ImageRecognition() {
     };
     loadModel();
   }, []);
-
   const speak = (text: string) => {
     if (!isMuted) {
       window.speechSynthesis.cancel();
@@ -42,37 +42,28 @@ export default function ImageRecognition() {
       window.speechSynthesis.speak(utterance);
     }
   };
-
   const drawDetections = (detections: Detection[]) => {
     if (!canvasRef.current || !webcamRef.current?.video) return;
-
     const ctx = canvasRef.current.getContext('2d');
     if (!ctx) return;
-
     const video = webcamRef.current.video;
     canvasRef.current.width = video.videoWidth;
     canvasRef.current.height = video.videoHeight;
-
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
     detections.forEach(detection => {
       const [x, y, width, height] = detection.bbox;
-
       ctx.strokeStyle = '#9333ea';
       ctx.lineWidth = 2;
       ctx.strokeRect(x, y, width, height);
-
       ctx.fillStyle = '#9333ea';
       const label = `${detection.class} ${(detection.score * 100).toFixed(0)}%`;
       const labelWidth = ctx.measureText(label).width;
       ctx.fillRect(x, y - 25, labelWidth + 10, 25);
-
       ctx.fillStyle = '#ffffff';
       ctx.font = '16px Arial';
       ctx.fillText(label, x + 5, y - 7);
     });
   };
-
   const detectObjects = useCallback(async (detailed: boolean = false) => {
     if (!webcamRef.current?.video || !model || isAnalyzing) return;
 
