@@ -1,4 +1,4 @@
-"import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, Mic } from 'lucide-react';
 
 interface Message {
@@ -111,5 +111,5 @@ return response;
       </button>
     </div>
   );
-}"
+}
 
