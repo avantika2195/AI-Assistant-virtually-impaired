@@ -31,8 +31,9 @@ export default function Chatbot() {
     } else if (lowerText.includes('help')) {
       response = 'I can help you with image recognition, navigation, and general assistance. What would you like to do?';
     } else if (lowerText.includes('What is the current time right now')) {
-      response = 'The current time is ${new Date().toLocaleTimeString()}';
-    } else if (lowerText.includes('How is todays weather') || lowerText.includes('What is the weather today)) {
+      response = `The current time is ${new Date().toLocaleTimeString()}`;
+
+    } else if (lowerText.includes('How is todays weather') || lowerText.includes('What is the weather today')) {
       response = 'I apologize, but I currently don\'t have access to weather information. Would you like me to help you with something else?';
     } else {
       response = 'I\'m not sure how to help with that. Would you like me to describe your surroundings using the camera?';
