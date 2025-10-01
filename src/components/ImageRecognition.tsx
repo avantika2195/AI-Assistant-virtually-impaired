@@ -215,6 +215,6 @@ export default function ImageRecognition() {
         )}
       </div>
     </div>
-  );
-}
+  )
+};
 
