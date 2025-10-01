@@ -2,7 +2,7 @@ import React, { useRef, useCallback, useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
 import * as cocossd from '@tensorflow-models/coco-ssd';
-import { Camera , Eye , Volume 2 , Volume X } from 'lucide-react';
+import { Camera , Eye , Volume2 , VolumeX } from 'lucide-react';
 
 interface Detection {
   class: string;
