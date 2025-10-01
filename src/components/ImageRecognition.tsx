@@ -2,7 +2,7 @@ import React, { useRef, useCallback, useEffect, useState } from 'react';
 import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
 import * as cocossd from '@tensorflow-models/coco-ssd';
-import { Camera, Eye, Volume2, VolumeX } from 'lucide-react'; // Fixed import
+import { Camera , Eye , Volume2 , VolumeX } from 'lucide-react';
 
 interface Detection {
   class: string;
@@ -18,12 +18,14 @@ export default function ImageRecognition() {
   const [isMuted, setIsMuted] = useState(false);
   const [detections, setDetections] = useState<Detection[]>([]);
   const [isLive, setIsLive] = useState(false);
-
+  
   useEffect(() => {
     const loadModel = async () => {
       try {
         await tf.ready();
-        const loadedModel = await cocossd.load({ base: 'mobilenet_v2' });
+        const loadedModel = await cocossd.load({
+          base: 'mobilenet_v2'
+        });
         setModel(loadedModel);
         speak('Vision system ready. You can say "detect" or "describe" to analyze your surroundings.');
       } catch (error) {
@@ -49,24 +51,30 @@ export default function ImageRecognition() {
     const ctx = canvasRef.current.getContext('2d');
     if (!ctx) return;
 
+    // Match canvas size to video
     const video = webcamRef.current.video;
     canvasRef.current.width = video.videoWidth;
     canvasRef.current.height = video.videoHeight;
 
+    // Clear previous drawings
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
+    // Draw detections
     detections.forEach(detection => {
       const [x, y, width, height] = detection.bbox;
-
+      
+      // Draw box
       ctx.strokeStyle = '#9333ea';
       ctx.lineWidth = 2;
       ctx.strokeRect(x, y, width, height);
 
+      // Draw label background
       ctx.fillStyle = '#9333ea';
-      const label = `${detection.class} ${(detection.score * 100).toFixed(0)}%`;
+      const label = ${detection.class} ${(detection.score * 100).toFixed(0)}%;
       const labelWidth = ctx.measureText(label).width;
       ctx.fillRect(x, y - 25, labelWidth + 10, 25);
 
+      // Draw label text
       ctx.fillStyle = '#ffffff';
       ctx.font = '16px Arial';
       ctx.fillText(label, x + 5, y - 7);
@@ -86,23 +94,21 @@ export default function ImageRecognition() {
         speak('No objects detected in view');
       } else {
         const description = predictions
-          .map(pred => `${pred.class} with ${Math.round(pred.score * 100)}% confidence`)
+          .map(pred => ${pred.class} with ${Math.round(pred.score * 100)}% confidence)
           .join(', ');
 
         if (detailed) {
           const spatialDesc = predictions.map(pred => {
             const [x, y] = pred.bbox;
-            const position =
-              x < webcamRef.current!.video!.videoWidth / 3
-                ? 'on the left'
-                : x > (webcamRef.current!.video!.videoWidth * 2) / 3
-                ? 'on the right'
-                : 'in the center';
-            return `${pred.class} ${position}`;
+            const position = 
+              x < webcamRef.current!.video!.videoWidth / 3 ? 'on the left' :
+              x > (webcamRef.current!.video!.videoWidth * 2) / 3 ? 'on the right' :
+              'in the center';
+            return ${pred.class} ${position};
           }).join(', ');
-          speak(`Detailed view: ${spatialDesc}`);
+          speak(Detailed view: ${spatialDesc});
         } else {
-          speak(`I see ${description}`);
+          speak(I see ${description});
         }
       }
     } catch (error) {
@@ -113,9 +119,10 @@ export default function ImageRecognition() {
     }
   }, [model, isAnalyzing]);
 
+  // Live detection loop
   useEffect(() => {
     let animationFrame: number;
-
+    
     const detectLoop = async () => {
       if (isLive) {
         await detectObjects(false);
@@ -123,28 +130,35 @@ export default function ImageRecognition() {
       }
     };
 
-    if (isLive) detectLoop();
+    if (isLive) {
+      detectLoop();
+    }
 
     return () => {
-      if (animationFrame) cancelAnimationFrame(animationFrame);
+      if (animationFrame) {
+        cancelAnimationFrame(animationFrame);
+      }
     };
   }, [isLive, detectObjects]);
 
+  // Voice commands
   useEffect(() => {
     const recognition = new (window as any).webkitSpeechRecognition();
     recognition.continuous = true;
     recognition.onresult = (event: any) => {
       const transcript = event.results[event.results.length - 1][0].transcript.toLowerCase();
-      if (transcript.includes('detect')) detectObjects(false);
-      else if (transcript.includes('describe')) detectObjects(true);
-      else if (transcript.includes('live')) {
+      if (transcript.includes('detect')) {
+        detectObjects(false);
+      } else if (transcript.includes('describe')) {
+        detectObjects(true);
+      } else if (transcript.includes('live')) {
         setIsLive(prev => !prev);
         speak(isLive ? 'Stopping live detection' : 'Starting live detection');
       }
     };
     recognition.start();
     return () => recognition.stop();
-  }, [detectObjects, isLive]);
+  }, [detectObjects]);
 
   return (
     <div className="space-y-4">
@@ -163,7 +177,7 @@ export default function ImageRecognition() {
           ref={canvasRef}
           className="absolute top-0 left-0 w-full h-full"
         />
-
+        
         <div className="absolute bottom-4 right-4 flex space-x-2">
           <button
             onClick={() => setIsMuted(!isMuted)}
