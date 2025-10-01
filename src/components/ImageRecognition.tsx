@@ -18,14 +18,12 @@ export default function ImageRecognition() {
   const [isMuted, setIsMuted] = useState(false);
   const [detections, setDetections] = useState<Detection[]>([]);
   const [isLive, setIsLive] = useState(false);
-  
+
   useEffect(() => {
     const loadModel = async () => {
       try {
         await tf.ready();
-        const loadedModel = await cocossd.load({
-          base: 'mobilenet_v2'
-        });
+        const loadedModel = await cocossd.load({ base: 'mobilenet_v2' });
         setModel(loadedModel);
         speak('Vision system ready. You can say "detect" or "describe" to analyze your surroundings.');
       } catch (error) {
@@ -59,7 +57,7 @@ export default function ImageRecognition() {
 
     detections.forEach(detection => {
       const [x, y, width, height] = detection.bbox;
-      
+
       ctx.strokeStyle = '#9333ea';
       ctx.lineWidth = 2;
       ctx.strokeRect(x, y, width, height);
@@ -94,10 +92,12 @@ export default function ImageRecognition() {
         if (detailed) {
           const spatialDesc = predictions.map(pred => {
             const [x, y] = pred.bbox;
-            const position = 
-              x < webcamRef.current!.video!.videoWidth / 3 ? 'on the left' :
-              x > (webcamRef.current!.video!.videoWidth * 2) / 3 ? 'on the right' :
-              'in the center';
+            const position =
+              x < webcamRef.current!.video!.videoWidth / 3
+                ? 'on the left'
+                : x > (webcamRef.current!.video!.videoWidth * 2) / 3
+                ? 'on the right'
+                : 'in the center';
             return `${pred.class} ${position}`;
           }).join(', ');
           speak(`Detailed view: ${spatialDesc}`);
@@ -115,7 +115,7 @@ export default function ImageRecognition() {
 
   useEffect(() => {
     let animationFrame: number;
-    
+
     const detectLoop = async () => {
       if (isLive) {
         await detectObjects(false);
@@ -163,7 +163,7 @@ export default function ImageRecognition() {
           ref={canvasRef}
           className="absolute top-0 left-0 w-full h-full"
         />
-        
+
         <div className="absolute bottom-4 right-4 flex space-x-2">
           <button
             onClick={() => setIsMuted(!isMuted)}
@@ -217,3 +217,4 @@ export default function ImageRecognition() {
     </div>
   );
 }
+
