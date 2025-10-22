@@ -24,7 +24,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 to-blue-500">
+    <div class="min-h-screen bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600"></div>
       <div className="container mx-auto px-4 py-8">
         <div className="bg-white rounded-2xl shadow-xl p-6">
           <div className="flex justify-center space-x-4 mb-6">
