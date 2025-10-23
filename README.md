@@ -54,7 +54,7 @@ Speech Recognition API — For voice input
 
 Text-to-Speech API — For voice output
 
-OpenAI / NLP Models — For intelligent responses
+OpenAI - For other API Integrations
 
 🧩 Future Enhancements
 
