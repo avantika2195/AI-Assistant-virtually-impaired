@@ -10,11 +10,13 @@ interface ProfileData {
   emergencyContact: string;
 }
 
-function App() {
-  const [profileComplete, setProfileComplete] = useState(false);
-  const [activeTab, setActiveTab] = useState<'camera' | 'chat'>('camera');
+type ActiveTab = 'camera' | 'chat';
 
-  const handleProfileComplete = (data: ProfileData) => {
+const App: React.FC = () => {
+  const [profileComplete, setProfileComplete] = useState<boolean>(false);
+  const [activeTab, setActiveTab] = useState<ActiveTab>('camera');
+
+  const handleProfileComplete = (data: ProfileData): void => {
     setProfileComplete(true);
     localStorage.setItem('userProfile', JSON.stringify(data));
   };
@@ -23,16 +25,22 @@ function App() {
     return <Profile onComplete={handleProfileComplete} />;
   }
 
+  const userProfile: ProfileData = JSON.parse(
+    localStorage.getItem('userProfile') || '{"name": "", "age": "", "emergencyContact": ""}'
+  );
+
   return (
-    <div class="min-h-screen bg-gradient-to-br from-cyan-400 via-blue-500 to-indigo-600">
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-2xl shadow-xl p-6">
+    <div className="min-h-screen bg-gradient-to-br from-sky-300 via-blue-400 to-indigo-700 flex items-center justify-center">
+      <div className="container mx-auto px-4 py-8 max-w-3xl">
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-8 border border-white/20">
+          
+          {/* Tabs */}
           <div className="flex justify-center space-x-4 mb-6">
             <button
               onClick={() => setActiveTab('camera')}
-              className={`flex items-center px-6 py-3 rounded-lg transition-colors ${
+              className={`flex items-center px-6 py-3 rounded-xl font-medium transition-all ${
                 activeTab === 'camera'
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-indigo-600 text-white shadow-md'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
@@ -41,9 +49,9 @@ function App() {
             </button>
             <button
               onClick={() => setActiveTab('chat')}
-              className={`flex items-center px-6 py-3 rounded-lg transition-colors ${
+              className={`flex items-center px-6 py-3 rounded-xl font-medium transition-all ${
                 activeTab === 'chat'
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-indigo-600 text-white shadow-md'
                   : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
               }`}
             >
@@ -52,27 +60,28 @@ function App() {
             </button>
           </div>
 
+          {/* Main Content */}
           <div className="mb-8">
             {activeTab === 'camera' ? <ImageRecognition /> : <Chatbot />}
           </div>
 
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+          {/* User Info */}
+          <div className="mt-6 p-4 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl border border-indigo-100">
             <div className="flex items-center space-x-3">
-              <User className="w-6 h-6 text-purple-600" />
+              <User className="w-6 h-6 text-indigo-600" />
               <div>
-                <h3 className="font-medium text-gray-800">
-                  {JSON.parse(localStorage.getItem('userProfile') || '{}').name}
-                </h3>
+                <h3 className="font-semibold text-gray-800">{userProfile.name}</h3>
                 <p className="text-sm text-gray-500">
-                  Emergency Contact: {JSON.parse(localStorage.getItem('userProfile') || '{}').emergencyContact}
+                  Emergency Contact: {userProfile.emergencyContact}
                 </p>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default App;
